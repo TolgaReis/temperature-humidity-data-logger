@@ -109,9 +109,18 @@ void loop() {
     String requestPath = serverPath +  String("islem=data_gonder&sicaklik=") + String(temperature) + String("&nem=") + String(humidity);
     
     /* HTTP Request */
-    if(http.begin(requestPath))
+    bool retVal = http.begin(requestPath);
+    if(retVal)
     {
       int httpCode = http.GET();
+      if(httpCode == -1)
+      {
+        while(!(httpCode != -1))
+        {
+          displayErrMsg(HTTP_CONN);
+          httpCode = http.GET();
+        }
+      }
       String payload = http.getString();
       Serial.println(httpCode);
       Serial.println(payload); 
